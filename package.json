@@ -12,5 +12,8 @@
     "express": "^4.12.3",
     "multer": "^0.1.8",
     "redis": "^0.12.1"
+  },
+  "dependencies": {
+    "express": "~4.13.3"
   }
 }
