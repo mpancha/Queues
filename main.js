@@ -57,15 +57,15 @@ app.post('/upload',[ multer({ dest: './uploads/'}), function(req, res){
 
 app.get('/meow', function(req, res) {
  	{
-                client.lrange("catImage", 0, 4, function(err,items){
- 		if (err) throw err
- 		res.writeHead(200, {'content-type':'text/html'});
- 		items.forEach(function (imagedata) 
- 		{
-    		res.write("<h1>\n<img src='data:my_pic.jpg;base64,"+imagedata+"'/>");
+           client.lrange("catImage", 0, 4, function(err,items){
+ 	      if (err) throw err;
+  	      res.writeHead(200, {'content-type':'text/html'});
+              console.log(items);
+              items.forEach(function (imagedata) {
+    		 res.write("<h1>\n<img src='data:my_pic.jpg;base64,"+imagedata+"'/>");
 		});
-          });
-   	res.end();
+              res.end();
+            });
  	}
 })
 
