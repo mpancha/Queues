@@ -2,12 +2,29 @@ var redis = require('redis')
 var multer  = require('multer')
 var express = require('express')
 var fs      = require('fs')
+
+// application
 var app = express()
-// REDIS
+
+// load balancer
+var lb = express()
+
+// REDIS client
 var client = redis.createClient(6379, '127.0.0.1', {})
 
+// Proxy logic
+lb.get('*', function(req, res) {
+   var redirect_server = client.rpop("proxy", function(err, data) {
+      console.log(data+req.url)
+      client.lpush("proxy", data)
+      res.redirect(data+req.url)
+   })
+}) 
+
+// Applicaiton logic
 app.get('/', function(req, res) {
   res.send('hello world')
+  //res.redirect('http://localhost:3000/get');
 })
 // Add hook to make it easier to get all visited URLS.
 app.use(function(req, res, next) 
@@ -69,6 +86,14 @@ app.get('/meow', function(req, res) {
  	}
 })
 
+// HTTP PROXY
+var loadbalancer = lb.listen(80, function () {
+
+  var host = loadbalancer.address().address
+  var port = loadbalancer.address().port
+
+   console.log('Load balancer listening at http://%s:%s', host, port)
+ })
 // HTTP SERVER
 var server = app.listen(3000, function () {
 
@@ -78,3 +103,11 @@ var server = app.listen(3000, function () {
    console.log('Example app listening at http://%s:%s', host, port)
  })
 
+// HTTP Additional server
+var service_instance = app.listen(3001, function () {
+
+   var host = service_instance.address().address
+   var port = service_instance.address().port
+
+   console.log('Additional Service Instance of app listening at http://%s:%s', host, port)
+ })
