@@ -19,31 +19,47 @@ lb.get('*', function(req, res) {
       client.lpush("proxy", data)
       res.redirect(data+req.url)
    })
-}) 
+})
+ 
+// POST REQUEST BALANCING
+//lb.post('^*$', function(req, res) {
+//    var redirect_server = client.rpop("proxy", function(err, data) {
+//      console.log(data+req.url)
+//      client.lpush("proxy", data)
+//      request({ url: req.url + req.path, headers: req.headers, body: req.body }, function(err, remoteResponse, remoteBody) {
+//        if (err) { return res.status(500).end('Error'); }
+//        //res.writeHead(...); // copy all headers from remoteResponse
+//        res.end(remoteBody);
+//        });
+//    })
+//})
 
 // Applicaiton logic
 app.get('/', function(req, res) {
   res.send('hello world')
   //res.redirect('http://localhost:3000/get');
 })
+
 // Add hook to make it easier to get all visited URLS.
 app.use(function(req, res, next) 
 {
 	// ... INSERT HERE.
-	console.log(req.method, req.ural);
+	console.log(req.method, req.url);
         client.lpush("recent", req.protocol +"://"+ req.get('host')+req.originalUrl);
         client.ltrim("recent", 0, 4);
 	next(); // Passing the request to the next handler in the stack.
 });
+
 ///////////// WEB ROUTES
 app.get('/set', function(req, res) {
   client.set("key", "this message will self-destruct in 10 seconds");
   client.expire("key", 10); 
+  console.log("key stored");
   res.send('key stored');
 })
 app.get('/get', function(req, res) {
   client.get("key", function(err,value){
-    //console.log(value);
+    console.log(value);
     res.send(value);});
 })
 
@@ -94,6 +110,7 @@ var loadbalancer = lb.listen(80, function () {
 
    console.log('Load balancer listening at http://%s:%s', host, port)
  })
+
 // HTTP SERVER
 var server = app.listen(3000, function () {
 
