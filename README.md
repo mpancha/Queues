@@ -23,3 +23,7 @@ Proxy
 Load balancer is running on port 80.
 
 The demo of additional service instance and proxy can be found here. 
+
+Code
+-----
+![main.js](main.js)
