@@ -23,8 +23,6 @@ Additional service instance
 ---------------------------
 Service instances are running on port 3000 and 3001.
 
-![image](screenshots/netstat.png)
-
 Proxy
 -------------
 Load balancer is running on port 80.
@@ -33,8 +31,8 @@ On recieving any GET request on port 80, rpop is performed on proxy list and red
 
 Code
 -----
-![main.js](main.js)
+[main.js](main.js)
 
 Screencast
 ----------
-![screencast](https://youtu.be/omyJhZWAMb0)
+[screencast](https://youtu.be/omyJhZWAMb0)
