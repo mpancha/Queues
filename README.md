@@ -1,5 +1,8 @@
 HW 3 
 ====
+Demo
+----
+[screencast](https://youtu.be/omyJhZWAMb0)
 
 get/set
 -------------------------
@@ -32,7 +35,3 @@ On recieving any GET request on port 80, rpop is performed on proxy list and red
 Code
 -----
 [main.js](main.js)
-
-Screencast
-----------
-[screencast](https://youtu.be/omyJhZWAMb0)
