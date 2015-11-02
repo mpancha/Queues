@@ -4,7 +4,9 @@ HW 3
 get/set
 -------------------------
 /set will set the key = "this message will self-destruct in 10 seconds" on redis server. The key will be deleted by redis server after 10 seconds.
-/get will fetch the key value from the redis server
+
+/get will fetch the key value from the redis server.
+
 /get after 10 seconds of /set will return null. 
 
 recent
@@ -14,11 +16,13 @@ recent
 upload/meow
 -----------------------------
 POST on /upload will save the payload image in "catImage" list. This list is limited to 5 images using ltrim.
+
 GET on /meow will fetch the images from "catImage" list and display on page.
 
 Additional service instance
 ---------------------------
 Service instances are running on port 3000 and 3001.
+
 ![image](screenshots/netstat.png)
 
 Proxy
