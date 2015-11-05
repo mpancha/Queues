@@ -2,12 +2,13 @@ var redis = require('redis')
 var multer  = require('multer')
 var express = require('express')
 var fs      = require('fs')
-
+var httpProxy = require('http-proxy')
 // application
 var app = express()
 
 // load balancer
 var lb = express()
+var proxy = httpProxy.createProxyServer({});
 
 // REDIS client
 var client = redis.createClient(6379, '127.0.0.1', {})
@@ -22,17 +23,13 @@ lb.get('*', function(req, res) {
 })
  
 // POST REQUEST BALANCING
-//lb.post('^*$', function(req, res) {
-//    var redirect_server = client.rpop("proxy", function(err, data) {
-//      console.log(data+req.url)
-//      client.lpush("proxy", data)
-//      request({ url: req.url + req.path, headers: req.headers, body: req.body }, function(err, remoteResponse, remoteBody) {
-//        if (err) { return res.status(500).end('Error'); }
-//        //res.writeHead(...); // copy all headers from remoteResponse
-//        res.end(remoteBody);
-//        });
-//    })
-//})
+lb.post('^*$', function(req, res) {
+    var redirect_server = client.rpop("proxy", function(err, data) {
+      console.log(data+req.url)
+      client.lpush("proxy", data)
+      proxy.web(req, res, { target: data });
+    })
+})
 
 // Applicaiton logic
 app.get('/', function(req, res) {
